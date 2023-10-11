@@ -5,7 +5,7 @@ namespace Bdiebeak.BoidsCPU
     public class Spawner : MonoBehaviour
     {
         [SerializeField]
-        private Boid _boidPrefab;
+        private BoidMover _boidPrefab;
         [SerializeField]
         private float _spawnRadius = 5;
         [SerializeField]

@@ -1,0 +1,16 @@
+{
+    "name": "BoidsCPU",
+    "rootNamespace": "",
+    "references": [
+        "GUID:059c6d1e234b3ad4fb35e461bbac8fd5"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

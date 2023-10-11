@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -118,4 +118,31 @@ public class Boid : MonoBehaviour {
         return Vector3.ClampMagnitude (v, settings.maxSteerForce);
     }
 
+    private void OnDrawGizmosSelected()
+    {
+        // Check forward collision.
+        if (Physics.SphereCast(position, settings.boundsRadius, forward, out _, settings.collisionAvoidDst, settings.obstacleMask))
+        {
+            Gizmos.color = Color.red;
+        }
+        else
+        {
+            Gizmos.color = Color.green;
+        }
+        Gizmos.DrawSphere(position, settings.boundsRadius);
+
+        // Check possible way.
+        foreach (Vector3 direction in BoidHelper.directions)
+        {
+            if (Physics.SphereCast(position, settings.boundsRadius, direction, out _, settings.collisionAvoidDst, settings.obstacleMask))
+            {
+                Gizmos.color = Color.yellow;
+            }
+            else
+            {
+                Gizmos.color = Color.green;
+            }
+            Gizmos.DrawRay(position, direction * settings.collisionAvoidDst);
+        }
+    }
 }

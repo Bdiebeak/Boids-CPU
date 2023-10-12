@@ -5,19 +5,15 @@ namespace Bdiebeak.BoidsCPU
 	public class BoidMover : MonoBehaviour
 	{
 		public Transform target;
-
-		// State
 		public Vector3 Position { get; private set; }
 		public Vector3 Forward { get; private set; }
 		public bool CanMove { get; set; } = true;
 
-		// To update:
 		[HideInInspector] public Vector3 avgFlockHeading;
 		[HideInInspector] public Vector3 avgAvoidanceHeading;
 		[HideInInspector] public Vector3 centreOfFlockmates;
 		[HideInInspector] public int numPerceivedFlockmates;
 
-		// Cached
 		private Transform _cachedTransform;
 		private BoidSettings _settings;
 		private Vector3 _velocity;

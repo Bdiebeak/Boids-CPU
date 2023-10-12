@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 namespace Bdiebeak.BoidsCPU
 {
@@ -19,45 +19,70 @@ namespace Bdiebeak.BoidsCPU
 
 		private void Update()
 		{
-			HandleBoidsMovement();
-		}
-
-		private void HandleBoidsMovement()
-		{
 			if (_boids == null || _boids.Length == 0)
 			{
 				return;
 			}
 
+			UpdateBoids();
+		}
+
+		private void UpdateBoids()
+		{
 			int numBoids = _boids.Length;
-			for (int indexA = 0; indexA < numBoids; indexA++)
+			var boids = new Boid[numBoids];
+			for (int i = 0; i < numBoids; i++)
 			{
-				BoidMover boidA = _boids[indexA];
-				for (int indexB = indexA; indexB < numBoids; indexB++)
+				boids[i] = new()
 				{
-					if (indexA == indexB)
+					position = _boids[i].Position,
+					forward = _boids[i].Forward
+				};
+			}
+
+			for (int i = 0; i < numBoids; i++)
+			{
+				for (int j = 0; j < numBoids; j++)
+				{
+					if (i != j)
 					{
-						continue;
-					}
+						Vector3 offset = boids[j].position - boids[i].position;
+						float sqrDst = offset.sqrMagnitude;
 
-					BoidMover boidB = _boids[indexB];
-					Vector3 offset = boidB.Position - boidA.Position;
-					float sqrDst = offset.x * offset.x + offset.y * offset.y + offset.z * offset.z;
-
-					if (sqrDst < _settings.perceptionRadius * _settings.perceptionRadius)
-					{
-						boidA.numPerceivedFlockmates += 1;
-						boidA.avgFlockHeading += boidB.Forward;
-						boidA.centreOfFlockmates += boidB.Position;
-
-						if (sqrDst < _settings.avoidanceRadius * _settings.avoidanceRadius)
+						if (sqrDst < _settings.perceptionRadius * _settings.perceptionRadius)
 						{
-							boidA.avgAvoidanceHeading -= offset / sqrDst;
+							boids[i].numPerceivedFlockmates++;
+							boids[i].avgFlockHeading += boids[j].forward;
+							boids[i].centreOfFlockmates += boids[j].position;
+
+							if (sqrDst < _settings.avoidanceRadius * _settings.avoidanceRadius)
+							{
+								boids[i].avgAvoidanceHeading -= offset / sqrDst;
+							}
 						}
 					}
 				}
-				boidA.UpdateBoid();
 			}
+
+			for (int i = 0; i < boids.Length; i++)
+			{
+				_boids[i].avgFlockHeading = boids[i].avgFlockHeading;
+				_boids[i].centreOfFlockmates = boids[i].centreOfFlockmates;
+				_boids[i].avgAvoidanceHeading = boids[i].avgAvoidanceHeading;
+				_boids[i].numPerceivedFlockmates = boids[i].numPerceivedFlockmates;
+				_boids[i].UpdateBoid();
+			}
+		}
+
+		public class Boid
+		{
+			public Vector3 position;
+			public Vector3 forward;
+
+			public Vector3 avgFlockHeading;
+			public Vector3 centreOfFlockmates;
+			public Vector3 avgAvoidanceHeading;
+			public int numPerceivedFlockmates;
 		}
 	}
 }

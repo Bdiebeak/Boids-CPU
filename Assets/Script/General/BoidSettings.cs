@@ -16,6 +16,7 @@ public class BoidSettings : ScriptableObject {
     public float seperateWeight = 1;
 
     public float targetWeight = 1;
+    public float spawnPointStayWeight = 1;
 
     [Header ("Collisions")]
     public LayerMask obstacleMask;

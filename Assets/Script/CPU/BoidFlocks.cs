@@ -19,7 +19,7 @@ namespace Bdiebeak.BoidsCPU
 			_boids = FindObjectsOfType<BoidMover>();
 			foreach (BoidMover boid in _boids)
 			{
-				boid.Initialize(_settings, null);
+				boid.Initialize(_settings, boid.transform.position, null);
 			}
 		}
 

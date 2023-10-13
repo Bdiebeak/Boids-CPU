@@ -17,15 +17,17 @@ namespace Bdiebeak.BoidsCPU
 		private Transform _cachedTransform;
 		private BoidSettings _settings;
 		private Vector3 _velocity;
+		private Vector3 _spawnPosition;
 
 		private void Awake()
 		{
 			_cachedTransform = transform;
 		}
 
-		public void Initialize(BoidSettings settings, Transform target)
+		public void Initialize(BoidSettings settings, Vector3 spawnPosition, Transform target)
 		{
 			this.target = target;
+			_spawnPosition = spawnPosition;
 			_settings = settings;
 
 			Position = _cachedTransform.position;
@@ -45,9 +47,11 @@ namespace Bdiebeak.BoidsCPU
 			// Calculate steering towards to target if the boid has one.
 			if (target != null)
 			{
-				Vector3 offsetToTarget = (target.position - Position);
-				acceleration = SteerTowards(offsetToTarget) * _settings.targetWeight;
+				acceleration = SteerTowards(target.position - Position) * _settings.targetWeight;
 			}
+
+			// Calculate steering to spawn position.
+			acceleration += SteerTowards(_spawnPosition - Position) * _settings.spawnPointStayWeight;
 
 			// Calculate steering towards to flockmates of another boids.
 			if (numPerceivedFlockmates != 0)
@@ -71,7 +75,6 @@ namespace Bdiebeak.BoidsCPU
 			_velocity = _velocity.normalized * Mathf.Clamp(_velocity.magnitude, _settings.minSpeed, _settings.maxSpeed);
 			_cachedTransform.position += _velocity * Time.deltaTime;
 			_cachedTransform.forward = _velocity.normalized;
-
 			Position = _cachedTransform.position;
 			Forward = _cachedTransform.forward;
 		}

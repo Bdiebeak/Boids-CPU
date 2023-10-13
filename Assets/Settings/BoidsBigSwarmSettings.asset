@@ -21,7 +21,7 @@ MonoBehaviour:
   cohesionWeight: 1
   seperateWeight: 2.75
   targetWeight: 2
-  spawnPointStayWeight: 0.1
+  spawnPointStayWeight: 0.5
   obstacleMask:
     serializedVersion: 2
     m_Bits: 1536

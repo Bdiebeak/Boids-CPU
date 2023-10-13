@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace Bdiebeak.BoidsCPU
 {
@@ -10,20 +11,41 @@ namespace Bdiebeak.BoidsCPU
         private float _spawnRadius = 5;
         [SerializeField]
         private int _spawnCount = 10;
+        [SerializeField]
+        private List<Transform> _spawnPoints = new();
 
         private void Awake()
         {
+            if (_spawnPoints.Count == 0)
+            {
+                _spawnPoints.Add(transform);
+            }
             SpawnBoids();
         }
 
         private void SpawnBoids()
         {
-            for (int i = 0; i < _spawnCount; i++)
+            int objectsPerSpawnPoint = _spawnCount / _spawnPoints.Count;
+            int remainder = _spawnCount % _spawnPoints.Count;
+
+            for (int i = 0; i < _spawnPoints.Count; i++)
             {
-                Transform boidTransform = Instantiate(_boidPrefab).transform;
-                boidTransform.position =  transform.position + Random.insideUnitSphere * _spawnRadius;
-                boidTransform.forward = Random.insideUnitSphere;
+                Transform spawnPoint = _spawnPoints[i];
+                int spawnCount = objectsPerSpawnPoint + (i == _spawnPoints.Count - 1 ? remainder : 0);
+                for (int j = 0; j < spawnCount; j++)
+                {
+                    SpawnBoid(spawnPoint.position + Random.insideUnitSphere * _spawnRadius);
+                }
             }
+        }
+
+        public float spawnCount;
+        private void SpawnBoid(Vector3 spawnPoint)
+        {
+            Transform boidTransform = Instantiate(_boidPrefab).transform;
+            boidTransform.position =  spawnPoint;
+            boidTransform.forward = Random.insideUnitSphere;
+            spawnCount++;
         }
     }
 }
